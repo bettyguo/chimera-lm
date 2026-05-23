@@ -4,7 +4,6 @@ from chimera.model import ChimeraConfig
 from chimera.utils.profiling import (
     block_flops_per_token_decode,
     block_kv_memory_bytes,
-    dense_transformer_flops_per_token,
     dense_transformer_kv_memory_bytes,
 )
 

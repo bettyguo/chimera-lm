@@ -45,8 +45,9 @@ class RotaryEmbedding(nn.Module):
         x:         (B, T, H, Dk) or (B, T, Dk) — RoPE rotates the last dim, indexed by T.
         positions: (T,) integer indices into the precomputed tables.
         """
-        cos = self.cos_cached[positions].to(x.dtype)
-        sin = self.sin_cached[positions].to(x.dtype)
+        # register_buffer return type is nn.Module per stubs; values are Tensors.
+        cos = self.cos_cached[positions].to(x.dtype)  # type: ignore[index]
+        sin = self.sin_cached[positions].to(x.dtype)  # type: ignore[index]
         if x.dim() == 4:
             # cos/sin: (T, Dk) -> (1, T, 1, Dk)
             cos = cos.unsqueeze(0).unsqueeze(2)

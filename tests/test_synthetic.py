@@ -1,11 +1,10 @@
 """Tests for the synthetic MQAR / Copy generators."""
 
-import torch
 
 from chimera.data.synthetic import (
+    SPECIAL_QUERY,
     CopyConfig,
     MQARConfig,
-    SPECIAL_QUERY,
     make_copy_batch,
     make_mqar_batch,
 )

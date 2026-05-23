@@ -43,7 +43,7 @@ def flash_causal_attention(
     flash-attn expects (B, T, H, Dk) directly (no transpose). The function
     handles head-major internally.
     """
-    fa = _ensure_flash_attn_available()
+    _ensure_flash_attn_available()
     from flash_attn import flash_attn_func  # type: ignore[import-not-found]
 
     # flash_attn_func signature: q, k, v of shape (B, T, H, Dk) — match ours.
@@ -58,7 +58,7 @@ def flash_sliding_window_attention(
     flash-attn 2.6's `window_size=(left, right)` exposes exact sliding-window
     causal attention. For mode 2 we want left = window-1 (lookback), right=0.
     """
-    fa = _ensure_flash_attn_available()
+    _ensure_flash_attn_available()
     from flash_attn import flash_attn_func  # type: ignore[import-not-found]
 
     return flash_attn_func(q, k, v, causal=True, window_size=(window - 1, 0))
@@ -80,7 +80,7 @@ def flash_step_attention(
       out:   (B, H, Dk)
     """
     # Treat q_t as a length-1 sequence and dispatch to flash_attn_func.
-    fa = _ensure_flash_attn_available()
+    _ensure_flash_attn_available()
     from flash_attn import flash_attn_func  # type: ignore[import-not-found]
 
     q = q_t.unsqueeze(1)  # (B, 1, H, Dk)

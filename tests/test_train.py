@@ -1,6 +1,5 @@
 """Smoke tests for the trainer — runs a couple of steps without exploding."""
 
-import torch
 
 from chimera.data.synthetic import MQARConfig, make_mqar_batch
 from chimera.model import ChimeraConfig

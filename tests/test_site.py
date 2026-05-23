@@ -14,15 +14,14 @@ from pathlib import Path
 
 import pytest
 
-
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SITE_DIR = REPO_ROOT / "site"
 
 
 def _mkdocs_available() -> bool:
     try:
-        import mkdocs  # noqa: F401
         import material  # noqa: F401  (mkdocs-material's package name)
+        import mkdocs  # noqa: F401
 
         return True
     except ImportError:
@@ -100,7 +99,7 @@ class _A11yScan(HTMLParser):
         if tag in {"h1", "h2", "h3", "h4", "h5", "h6"}:
             self.headings.append(tag)
         if tag == "img" and not d.get("alt"):
-            self.imgs_without_alt.append(d.get("src", "?"))
+            self.imgs_without_alt.append(d.get("src") or "?")
         if tag == "main":
             self.has_main = True
         if tag == "html" and d.get("lang"):
@@ -109,7 +108,7 @@ class _A11yScan(HTMLParser):
             self._link_open = True
             self._link_attrs = d
             self._link_buf = ""
-            if "md-skip" in d.get("class", ""):
+            if "md-skip" in (d.get("class") or ""):
                 self.has_skip_link = True
 
     def handle_endtag(self, tag):

@@ -44,7 +44,7 @@ from chimera.cache import ChimeraCacheLayer
 from chimera.modules.attention import NEG_INF, sliding_window_attention, step_attention
 from chimera.modules.ffn import SwiGLU
 from chimera.modules.rope import RotaryEmbedding
-from chimera.modules.router import MODE_FULL, MODE_SSM, MODE_SWA, MixerRouter, RouterOutput
+from chimera.modules.router import MODE_FULL, MODE_SWA, MixerRouter, RouterOutput
 from chimera.modules.ssm import ToySSM
 
 

@@ -15,7 +15,7 @@ import pytest
 def test_mamba2_wrapper_raises_on_cpu_without_mamba_ssm():
     pytest.importorskip("torch")
     try:
-        import mamba_ssm  # noqa: F401
+        import mamba_ssm  # type: ignore[import-not-found]  # noqa: F401
         pytest.skip("mamba_ssm is installed — skipping CPU-only import test")
     except ImportError:
         pass
@@ -28,13 +28,14 @@ def test_mamba2_wrapper_raises_on_cpu_without_mamba_ssm():
 
 def test_flash_attn_wrapper_raises_on_cpu_without_flash_attn():
     try:
-        import flash_attn  # noqa: F401
+        import flash_attn  # type: ignore[import-not-found]  # noqa: F401
         pytest.skip("flash_attn is installed — skipping CPU-only import test")
     except ImportError:
         pass
 
-    from chimera.modules.flash_attn_wrapper import flash_causal_attention
     import torch
+
+    from chimera.modules.flash_attn_wrapper import flash_causal_attention
 
     q = k = v = torch.zeros(1, 4, 2, 8)
     with pytest.raises(ImportError, match="flash-attn is not installed"):

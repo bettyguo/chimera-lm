@@ -29,7 +29,6 @@ from dataclasses import dataclass
 
 import torch
 
-
 SPECIAL_PAD = 0
 SPECIAL_QUERY = 1
 NUM_SPECIAL = 2
@@ -86,10 +85,7 @@ def make_mqar_batch(
     in the input and put the correct value in `targets[p]` where p is the
     position of q_i.
     """
-    if seed is not None:
-        g = torch.Generator().manual_seed(seed)
-    else:
-        g = None
+    g = torch.Generator().manual_seed(seed) if seed is not None else None
 
     B = batch_size
     N = cfg.num_kv_pairs
@@ -101,7 +97,7 @@ def make_mqar_batch(
 
     # Sample N distinct keys per batch element (no replacement) — required for
     # the lookup to be unambiguous. Use torch.argsort over uniform noise.
-    if N > cfg.num_keys:
+    if cfg.num_keys < N:
         raise ValueError(f"num_kv_pairs={N} > num_keys={cfg.num_keys}")
     if M > N:
         raise ValueError(f"num_queries={M} > num_kv_pairs={N} (cannot query unknown keys)")
@@ -167,10 +163,7 @@ def make_copy_batch(
     cfg: CopyConfig, batch_size: int, *, seed: int | None = None
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Selective-copy task. Returns (input_ids, targets) with -100 mask."""
-    if seed is not None:
-        g = torch.Generator().manual_seed(seed)
-    else:
-        g = None
+    g = torch.Generator().manual_seed(seed) if seed is not None else None
 
     B = batch_size
     noise = torch.randint(2, cfg.vocab_size, (B, cfg.noise_len), generator=g)

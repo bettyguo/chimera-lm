@@ -16,7 +16,7 @@ import torch.nn as nn
 
 from chimera.cache import ChimeraCache
 from chimera.modules.chimera_block import BlockConfig, ChimeraBlock
-from chimera.modules.router import NUM_MODES, RouterOutput
+from chimera.modules.router import RouterOutput
 
 
 @dataclass

@@ -13,7 +13,7 @@ off-by-one, and resubmit.
 import pytest
 import torch
 
-from chimera.cache import ChimeraCache, ChimeraCacheLayer
+from chimera.cache import ChimeraCacheLayer
 from chimera.model import ChimeraConfig, ChimeraLM
 from chimera.modules.chimera_block import BlockConfig, ChimeraBlock
 

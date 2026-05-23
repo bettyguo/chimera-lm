@@ -1,9 +1,8 @@
 """Router + aux-free balancer tests."""
 
-import pytest
 import torch
 
-from chimera.modules.router import AuxFreeBalancer, MixerRouter, NUM_MODES
+from chimera.modules.router import NUM_MODES, AuxFreeBalancer, MixerRouter
 
 
 def test_router_shapes_soft():
@@ -50,8 +49,9 @@ def test_balancer_pushes_toward_target():
     for _ in range(200):
         bal.observe_and_update(hard)
     # mode-1 bias should be negative; others non-negative.
-    assert bal.bias[1] < 0
-    assert (bal.bias[[0, 2, 3]] > 0).all()
+    # (bias is registered as a buffer; stubs return Module — type-ignored for index access)
+    assert bal.bias[1] < 0  # type: ignore[index]
+    assert (bal.bias[[0, 2, 3]] > 0).all()  # type: ignore[index]
 
 
 def test_balancer_clamp():

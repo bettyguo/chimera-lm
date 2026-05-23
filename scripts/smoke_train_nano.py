@@ -24,7 +24,6 @@ _root = Path(__file__).resolve().parent.parent
 if str(_root) not in sys.path:
     sys.path.insert(0, str(_root))
 
-import torch
 
 from chimera.data.synthetic import MQARConfig, make_mqar_batch
 from chimera.model import ChimeraConfig

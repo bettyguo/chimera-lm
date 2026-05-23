@@ -25,7 +25,6 @@ import torch
 from chimera.data.synthetic import MQARConfig
 from chimera.modules.router import MODE_FULL, MODE_IDENTITY, MODE_SSM, MODE_SWA, NUM_MODES
 
-
 MODE_NAMES = {
     MODE_IDENTITY: "identity",
     MODE_SSM: "ssm",

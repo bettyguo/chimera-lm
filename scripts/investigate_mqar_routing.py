@@ -21,8 +21,8 @@ Run:
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
 
 _root = Path(__file__).resolve().parent.parent
 if str(_root) not in sys.path:
@@ -67,10 +67,11 @@ def _train(
     t0 = time.time()
     for step in range(steps):
         ids, targets = batch_source(step)
-        if is_chimera:
-            out = model.forward_prefill(ids, router_mode="soft")
-        else:
-            out = model.forward_prefill(ids)
+        out = (
+            model.forward_prefill(ids, router_mode="soft")
+            if is_chimera
+            else model.forward_prefill(ids)
+        )
         logits = out.logits
         B, T, V = logits.shape
         loss = F.cross_entropy(logits.reshape(B * T, V), targets.reshape(B * T), ignore_index=-100)

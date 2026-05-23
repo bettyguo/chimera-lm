@@ -22,15 +22,14 @@ from __future__ import annotations
 
 import math
 import time
-from dataclasses import dataclass, field
+from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Iterator
 
 import torch
 
 from chimera.losses import chimera_train_step_loss
 from chimera.model import ChimeraConfig, ChimeraLM
-
 
 Batch = tuple[torch.Tensor, torch.Tensor]  # (input_ids, targets) — targets use -100 mask
 BatchSource = Callable[[int], Batch]       # int -> batch given step number

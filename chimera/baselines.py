@@ -87,7 +87,7 @@ class PureTransformerLM(nn.Module):
         self.norm_final = nn.LayerNorm(cfg.dim)
         self.unembed = None if cfg.tie_embeddings else nn.Linear(cfg.dim, cfg.vocab_size, bias=False)
 
-    def forward_prefill(self, input_ids: torch.Tensor, **kwargs) -> "_BaselineOut":
+    def forward_prefill(self, input_ids: torch.Tensor, **kwargs) -> _BaselineOut:
         h = self.tok_embed(input_ids)
         for layer in self.layers:
             h = layer(h)
@@ -125,7 +125,7 @@ class PureSSMLM(nn.Module):
         self.norm_final = nn.LayerNorm(cfg.dim)
         self.unembed = None if cfg.tie_embeddings else nn.Linear(cfg.dim, cfg.vocab_size, bias=False)
 
-    def forward_prefill(self, input_ids: torch.Tensor, **kwargs) -> "_BaselineOut":
+    def forward_prefill(self, input_ids: torch.Tensor, **kwargs) -> _BaselineOut:
         h = self.tok_embed(input_ids)
         for layer in self.layers:
             h = layer(h)
