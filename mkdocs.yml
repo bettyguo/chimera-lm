@@ -1,0 +1,142 @@
+site_name: CHIMERA
+site_description: "Conditionally Hybrid Mixture of Exact and Recurrent Attention"
+site_author: CHIMERA project
+site_url: https://bettyguo.github.io/chimera-lm/  # update on first deploy
+repo_url: https://github.com/bettyguo/chimera-lm  # update to real repo
+repo_name: chimera-lm
+edit_uri: edit/main/docs/
+docs_dir: docs
+site_dir: site
+strict: true   # any broken link / unresolved reference fails the build
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - toc.follow
+    - announce.dismiss
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Use system theme
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  # Material's icons announce themselves to screen readers via aria-label.
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mermaid2:
+      arguments:
+        securityLevel: loose
+        theme: default
+
+markdown_extensions:
+  # Better admonitions, footnotes, tables, etc.
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Anchor link to this section
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.highlight:
+      # anchor_linenums was disabled: it generated empty <a> anchor targets per
+      # code line that have no text or aria-label, violating WCAG 4.1.2 (Name,
+      # Role, Value). The line numbers still render; we just lose direct
+      # URL-hash linking to a specific line, which is rarely used in practice.
+      anchor_linenums: false
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      base_path: ['.', 'docs']  # allows --8<-- "POSTMORTEM.md" etc.
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Architecture:
+      - Overview: architecture.md
+      - Routing & balancing: routing.md
+      - Multi-mode KV cache: kv_cache.md
+  - Implementation notes: think.md
+  - Experiments:
+      - Nano MQAR report: experiments/nano_report.md
+  - Decisions:
+      - ADR-001 — Cache resolution: decisions/ADR-001-cache-resolution.md
+      - ADR-002 — Toy SSM substitution: decisions/ADR-002-toy-ssm-substitution.md
+  - Literature:
+      - Reading list: lit/README.md
+      - Template: lit/_TEMPLATE.md
+      - "1. Gu & Dao 2023 — Mamba": lit/01_gu_dao_2023_mamba.md
+      - "2. Dao & Gu 2024 — Mamba-2 / SSD": lit/02_dao_gu_2024_mamba2_ssd.md
+      - "3. Lieber et al. 2024 — Jamba": lit/03_lieber_2024_jamba.md
+      - "4. Zamba & Samba": lit/04_glorioso_2024_zamba_ren_2024_samba.md
+      - "5. Mixture-of-Depths": lit/05_raposo_2024_mixture_of_depths.md
+      - "6. Zoology / Based": lit/06_arora_2024_zoology_based.md
+      - "7. Mamba scaling laws": lit/07_waleffe_2024_mamba_scaling.md
+      - "8. Switch Transformer": lit/08_fedus_2022_switch_transformer.md
+      - "9. DeepSeek-V3": lit/09_deepseek_2024_v3.md
+      - "10. RWKV-7": lit/10_peng_2024_rwkv7.md
+  - Postmortem: postmortem.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/bettyguo/chimera-lm
+      name: GitHub repository
+
+# Accessibility checks: Material applies semantic HTML, ARIA roles, and
+# a "skip to content" link by default. Mermaid diagrams render as SVG;
+# we add descriptive figure captions in the markdown so screen readers
+# have alt-text equivalents.

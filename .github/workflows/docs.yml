@@ -1,0 +1,106 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'README.md'
+      - 'POSTMORTEM.md'
+      - 'experiments/**'
+      - 'chimera/THINK.md'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install MkDocs + Material + plugins
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs-material mkdocs-mermaid2-plugin pymdown-extensions
+      - name: Build site (strict)
+        run: mkdocs build --strict
+      - name: Accessibility self-check
+        run: |
+          python <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import sys
+
+          class Check(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.h, self.imgs, self.links = [], [], []
+                  self.main = self.skip = self.lang = False
+                  self._o, self._b, self._a = False, '', {}
+              def handle_starttag(self, t, a):
+                  d = dict(a)
+                  if t in {'h1','h2','h3','h4','h5','h6'}: self.h.append(t)
+                  if t == 'img' and not d.get('alt'): self.imgs.append(d.get('src','?'))
+                  if t == 'main': self.main = True
+                  if t == 'html' and d.get('lang'): self.lang = True
+                  if t == 'a':
+                      self._o = True; self._a = d; self._b = ''
+                      if 'md-skip' in d.get('class',''): self.skip = True
+              def handle_endtag(self, t):
+                  if t == 'a' and self._o:
+                      tx = self._b.strip()
+                      if not tx and not self._a.get('aria-label') and not self._a.get('title'):
+                          self.links.append(self._a.get('href','?'))
+                      self._o = False
+              def handle_data(self, d):
+                  if self._o: self._b += d
+
+          fail = False
+          for pg in Path('site').rglob('*.html'):
+              c = Check(); c.feed(pg.read_text(encoding='utf-8'))
+              issues = []
+              h1 = sum(1 for x in c.h if x == 'h1')
+              if h1 != 1: issues.append(f'{h1} h1')
+              last = 0
+              for h in c.h:
+                  lvl = int(h[1])
+                  if last and lvl - last > 1: issues.append(f'h{last}->h{lvl}')
+                  last = lvl
+              if c.imgs: issues.append(f'{len(c.imgs)} img w/o alt')
+              if c.links: issues.append(f'{len(c.links)} empty link')
+              if not c.main: issues.append('no main')
+              if not c.skip: issues.append('no skip link')
+              if not c.lang: issues.append('no lang')
+              if issues:
+                  print(f'FAIL {pg}: {issues}')
+                  fail = True
+          if fail:
+              sys.exit(1)
+          print('a11y check: PASS')
+          PY
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
