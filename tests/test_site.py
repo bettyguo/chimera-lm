@@ -20,8 +20,8 @@ SITE_DIR = REPO_ROOT / "site"
 
 def _mkdocs_available() -> bool:
     try:
-        import material  # noqa: F401  (mkdocs-material's package name)
-        import mkdocs  # noqa: F401
+        import material  # type: ignore[import-not-found]  # noqa: F401  (mkdocs-material's package)
+        import mkdocs  # type: ignore[import-not-found]  # noqa: F401
 
         return True
     except ImportError:
